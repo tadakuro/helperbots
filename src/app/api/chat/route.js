@@ -27,8 +27,8 @@ export async function POST(request) {
     }
 
     // Allowed models whitelist — prevents arbitrary model injection
-    const allowedModels = ["gpt-5.4-mini", "gpt-5.4-nano"];
-    const selectedModel = allowedModels.includes(model) ? model : "gpt-5.4-mini";
+    const allowedModels = ["gpt-5-mini", "gpt-5-nano"];
+    const selectedModel = allowedModels.includes(model) ? model : "gpt-5-mini";
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",

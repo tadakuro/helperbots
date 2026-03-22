@@ -4,19 +4,26 @@ import { useState, useRef, useEffect } from "react";
 import CharacterSilhouette from "./CharacterSilhouette";
 import MessageBox from "./MessageBox";
 import ModelToggle from "./ModelToggle";
+import ApiKeyModal from "./ApiKeyModal";
 import { parseMood } from "@/lib/moodParser";
 
-export default function ChatWindow({ character, username, apiKey }) {
-  const [messages, setMessages] = useState([]); // { role: "user"|"assistant", content: string }
-  const [parsedMessages, setParsedMessages] = useState([]); // { role, text, mood }
+export default function ChatWindow({ character, username, apiKey, onApiKeyChange }) {
+  const [messages, setMessages] = useState([]);
+  const [parsedMessages, setParsedMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [currentMood, setCurrentMood] = useState(character.defaultMood);
-  const [currentText, setCurrentText] = useState("");
-  const [model, setModel] = useState("gpt-5.4-mini");
+  const [model, setModel] = useState("gpt-5-mini");
   const [error, setError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const historyRef = useRef(null);
-  const inputRef = useRef(null);
+
+  // Auto-open modal on mount if no key is set
+  useEffect(() => {
+    if (!apiKey) {
+      setModalOpen(true);
+    }
+  }, []);
 
   // Reset state when character changes
   useEffect(() => {
@@ -25,7 +32,6 @@ export default function ChatWindow({ character, username, apiKey }) {
     setInputValue("");
     setIsTyping(false);
     setCurrentMood(character.defaultMood);
-    setCurrentText("");
     setError("");
   }, [character.id]);
 
@@ -38,7 +44,7 @@ export default function ChatWindow({ character, username, apiKey }) {
 
   const sendMessage = async () => {
     const trimmed = inputValue.trim();
-    if (!trimmed || isTyping) return;
+    if (!trimmed || isTyping || !apiKey) return;
 
     setError("");
     setInputValue("");
@@ -83,7 +89,6 @@ export default function ChatWindow({ character, username, apiKey }) {
         { role: "assistant", text, mood },
       ]);
       setCurrentMood(mood);
-      setCurrentText(text);
     } catch (err) {
       console.error("Send message error:", err);
       setError(err.message || "Something went wrong. Please try again.");
@@ -99,7 +104,6 @@ export default function ChatWindow({ character, username, apiKey }) {
     }
   };
 
-  // Show last assistant message in the VN box
   const lastAssistant = [...parsedMessages].reverse().find((m) => m.role === "assistant");
   const displayText = isTyping ? "" : (lastAssistant?.text ?? "");
   const displayMood = isTyping ? currentMood : (lastAssistant?.mood ?? character.defaultMood);
@@ -114,13 +118,29 @@ export default function ChatWindow({ character, username, apiKey }) {
           </span>
           <span className="chat-char-type">{character.type}</span>
         </div>
-        <ModelToggle model={model} onModelChange={setModel} />
+        <div className="chat-topbar-right">
+          <ModelToggle model={model} onModelChange={setModel} />
+          <button
+            className={`key-btn ${!apiKey ? "key-btn--missing" : ""}`}
+            onClick={() => setModalOpen(true)}
+            title={apiKey ? "Update API Key" : "Set API Key"}
+          >
+            {apiKey ? "🔑 Key" : "⚠️ No Key"}
+          </button>
+        </div>
       </div>
 
       {/* Main VN area */}
       <div className="vn-area">
         {/* Chat history scroll */}
         <div className="chat-history" ref={historyRef}>
+          {parsedMessages.length === 0 && (
+            <div className="chat-empty">
+              {apiKey
+                ? `Start talking to ${character.name}...`
+                : "Set your API key to begin."}
+            </div>
+          )}
           {parsedMessages.map((msg, i) => (
             <div
               key={i}
@@ -161,20 +181,23 @@ export default function ChatWindow({ character, username, apiKey }) {
             {error && <div className="chat-error">{error}</div>}
             <div className="chat-input-row">
               <input
-                ref={inputRef}
                 className="chat-input"
                 type="text"
-                placeholder={`Say something to ${character.name}...`}
+                placeholder={
+                  !apiKey
+                    ? "Set your API key first..."
+                    : `Say something to ${character.name}...`
+                }
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={isTyping}
+                disabled={isTyping || !apiKey}
                 maxLength={300}
               />
               <button
                 className="chat-send-btn"
                 onClick={sendMessage}
-                disabled={isTyping || !inputValue.trim()}
+                disabled={isTyping || !inputValue.trim() || !apiKey}
                 style={{ "--char-color": character.color }}
               >
                 Send
@@ -183,6 +206,14 @@ export default function ChatWindow({ character, username, apiKey }) {
           </div>
         </div>
       </div>
+
+      {/* API Key Modal */}
+      <ApiKeyModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSave={onApiKeyChange}
+        hasKey={!!apiKey}
+      />
     </div>
   );
 }

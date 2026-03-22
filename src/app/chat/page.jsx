@@ -13,8 +13,6 @@ export default function ChatPage() {
   const [usernameInput, setUsernameInput] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [apiKey, setApiKey] = useState("");
-  const [apiKeyInput, setApiKeyInput] = useState("");
-  const [apiKeyError, setApiKeyError] = useState("");
   const [activeCharId, setActiveCharId] = useState(characters[0].id);
 
   // Check session auth on mount
@@ -29,36 +27,13 @@ export default function ChatPage() {
 
   const handleUsernameSubmit = () => {
     const trimmed = usernameInput.trim();
-    if (!trimmed) {
-      setUsernameError("Please enter a name.");
-      return;
-    }
-    if (trimmed.length > 24) {
-      setUsernameError("Name must be 24 characters or less.");
-      return;
-    }
+    if (!trimmed) return;
+    if (trimmed.length > 24) return;
     setUsername(trimmed);
-  };
-
-  const handleApiKeySubmit = () => {
-    const trimmed = apiKeyInput.trim();
-    if (!trimmed) {
-      setApiKeyError("Please enter your API key.");
-      return;
-    }
-    if (!trimmed.startsWith("sk-")) {
-      setApiKeyError("Invalid key — OpenAI keys start with sk-");
-      return;
-    }
-    setApiKey(trimmed);
   };
 
   const handleUsernameKeyDown = (e) => {
     if (e.key === "Enter") handleUsernameSubmit();
-  };
-
-  const handleApiKeyKeyDown = (e) => {
-    if (e.key === "Enter") handleApiKeySubmit();
   };
 
   const handleCharSelect = (id) => {
@@ -87,7 +62,6 @@ export default function ChatPage() {
             maxLength={24}
             autoFocus
           />
-          {usernameError && <p className="gate-error">{usernameError}</p>}
           <button
             className="gate-btn"
             onClick={handleUsernameSubmit}
@@ -100,38 +74,7 @@ export default function ChatPage() {
     );
   }
 
-  // Step 2 — API Key
-  if (!apiKey) {
-    return (
-      <main className="gate-page">
-        <div className="gate-card">
-          <div className="gate-ornament">✦</div>
-          <h1 className="gate-title">API Key</h1>
-          <p className="gate-subtitle">Paste your OpenAI API key to begin</p>
-          <p className="gate-hint">Your key is only held in memory and never stored</p>
-          <input
-            className="gate-input"
-            type="password"
-            placeholder="sk-..."
-            value={apiKeyInput}
-            onChange={(e) => setApiKeyInput(e.target.value)}
-            onKeyDown={handleApiKeyKeyDown}
-            autoFocus
-          />
-          {apiKeyError && <p className="gate-error">{apiKeyError}</p>}
-          <button
-            className="gate-btn"
-            onClick={handleApiKeySubmit}
-            disabled={!apiKeyInput.trim()}
-          >
-            Continue
-          </button>
-        </div>
-      </main>
-    );
-  }
-
-  // Step 3 — Main chat
+  // Step 2 — Main chat (modal handles API key)
   return (
     <main className="app-layout">
       <Sidebar
@@ -144,6 +87,7 @@ export default function ChatPage() {
         character={activeCharacter}
         username={username}
         apiKey={apiKey}
+        onApiKeyChange={setApiKey}
       />
     </main>
   );

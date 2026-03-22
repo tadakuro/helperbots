@@ -1,8 +1,8 @@
 "use client";
 
 const MODELS = [
-  { id: "gpt-5.4-mini", label: "Mini", desc: "Better quality" },
-  { id: "gpt-5.4-nano", label: "Nano", desc: "Save tokens" },
+  { id: "gpt-5-mini", label: "Mini", desc: "Better quality" },
+  { id: "gpt-5-nano", label: "Nano", desc: "Save tokens" },
 ];
 
 export default function ModelToggle({ model, onModelChange }) {
