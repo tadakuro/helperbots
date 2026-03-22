@@ -321,23 +321,22 @@ html, body {
 }
 
 /* ============================================================
-   VN AREA
+   CHAT AREA
    ============================================================ */
-.vn-area {
+.chat-area {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  padding: 12px 14px;
+  gap: 10px;
   overflow: hidden;
-  padding: 10px 14px 12px;
-  justify-content: space-between;
 }
 
 /* Chat history */
 .chat-history {
   flex: 1;
   min-height: 0;
-  max-height: calc(100vh - 280px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -347,18 +346,9 @@ html, body {
   scrollbar-color: rgba(255,255,255,0.08) transparent;
 }
 
-.chat-history::-webkit-scrollbar {
-  width: 3px;
-}
-
-.chat-history::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.chat-history::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.08);
-  border-radius: 2px;
-}
+.chat-history::-webkit-scrollbar { width: 3px; }
+.chat-history::-webkit-scrollbar-track { background: transparent; }
+.chat-history::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
 
 .history-line {
   display: flex;
@@ -406,28 +396,6 @@ html, body {
   background: rgba(255,255,255,0.06);
 }
 
-/* VN bottom section */
-.vn-bottom {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  flex-shrink: 0;
-}
-
-.vn-silhouette {
-  width: 100px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
-}
-
-.vn-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
 /* ============================================================
    MESSAGE BOX
    ============================================================ */
@@ -437,7 +405,7 @@ html, body {
   border-left: 3px solid var(--char-color);
   border-radius: var(--radius);
   padding: 10px 14px;
-  min-height: 72px;
+  flex-shrink: 0;
   backdrop-filter: blur(6px);
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
@@ -467,7 +435,7 @@ html, body {
   line-height: 1.55;
   color: var(--text);
   white-space: pre-wrap;
-  min-height: 36px;
+  min-height: 32px;
 }
 
 /* Typing indicator */
@@ -498,6 +466,16 @@ html, body {
 /* ============================================================
    CHAT INPUT
    ============================================================ */
+.chat-input-area {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
 .chat-error {
   font-size: 0.78rem;
   color: #e06060;
@@ -511,48 +489,42 @@ html, body {
 
 .chat-input {
   flex: 1;
-  padding: 8px 12px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: var(--radius);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .chat-input:focus {
-  border-color: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.22);
   box-shadow: 0 0 0 2px rgba(255,255,255,0.04);
 }
 
-.chat-input::placeholder {
-  color: var(--text-muted);
-}
-
-.chat-input:disabled {
-  opacity: 0.5;
-}
+.chat-input::placeholder { color: var(--text-muted); }
+.chat-input:disabled { opacity: 0.5; }
 
 .chat-send-btn {
-  padding: 8px 18px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: var(--radius);
   color: var(--text);
   font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.2s;
+  transition: background 0.15s, border-color 0.15s;
   flex-shrink: 0;
 }
 
 .chat-send-btn:hover:not(:disabled) {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.18);
-  box-shadow: 0 0 10px rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.2);
 }
 
 .chat-send-btn:disabled {
