@@ -330,13 +330,14 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   padding: 10px 14px 12px;
-  gap: 10px;
+  justify-content: space-between;
 }
 
 /* Chat history */
 .chat-history {
   flex: 1;
   min-height: 0;
+  max-height: calc(100vh - 280px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -411,13 +412,11 @@ html, body {
   gap: 12px;
   align-items: flex-end;
   flex-shrink: 0;
-  height: 200px;
 }
 
 .vn-silhouette {
-  width: 110px;
+  width: 100px;
   flex-shrink: 0;
-  height: 195px;
   display: flex;
   align-items: flex-end;
 }
