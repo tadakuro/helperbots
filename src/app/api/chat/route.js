@@ -39,7 +39,7 @@ export async function POST(request) {
       body: JSON.stringify({
         model: selectedModel,
         max_completion_tokens: 200,
-        temperature: 0.9,
+        temperature: 1,
         messages: [
           { role: "system", content: systemPrompt },
           ...messages,
